@@ -1,19 +1,22 @@
+%define		gst_req_ver	1.4.0
+%define		gstpb_req_ver	1.4.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.2.1
+Version:	1.4.0
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
-# Source0-md5:	6353b8d0e63e53dfe9d5117bc6984e1c
+# Source0-md5:	063cc8aae62c9013d078da7f3825805f
 URL:		http://gstreamer.net/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	glib2-devel >= 1:2.34.0
 BuildRequires:	gobject-introspection-devel >= 0.9.6
-BuildRequires:	gstreamer-devel >= 1.2.0
-BuildRequires:	gstreamer-plugins-base-devel >= 1.2.0
+BuildRequires:	gstreamer-devel >= %{gst_req_ver}
+BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
+BuildRequires:	gstreamer-validate-devel >= 1.0.0
 BuildRequires:	gtk-doc >= 1.3
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel >= 2.0
@@ -24,8 +27,8 @@ BuildRequires:	python >= 2.3
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 Requires:	glib2 >= 1:2.34.0
-Requires:	gstreamer >= 1.2.0
-Requires:	gstreamer-plugins-base >= 1.2.0
+Requires:	gstreamer >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -42,8 +45,8 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GStreamer Editing Services
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	glib2-devel >= 1:2.34.0
-Requires:	gstreamer-devel >= 1.2.0
-Requires:	gstreamer-plugins-base-devel >= 1.2.0
+Requires:	gstreamer-devel >= %{gst_req_ver}
+Requires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
 
 %description devel
 Header files for GStreamer Editing Services library.
@@ -114,6 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libges-1.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libges-1.0.so.0
 %{_libdir}/girepository-1.0/GES-1.0.typelib
+%{_datadir}/gstreamer-1.0/validate-scenario/ges-edit-clip-while-paused.scenario
 
 %files devel
 %defattr(644,root,root,755)
