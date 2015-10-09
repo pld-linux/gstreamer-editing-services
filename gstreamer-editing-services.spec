@@ -1,14 +1,18 @@
-%define		gst_req_ver	1.4.0
-%define		gstpb_req_ver	1.4.0
+#
+# Conditional build:
+%bcond_without	static_libs	# static library
+#
+%define		gst_req_ver	1.6.0
+%define		gstpb_req_ver	1.6.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.4.0
+Version:	1.6.0
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
-# Source0-md5:	063cc8aae62c9013d078da7f3825805f
+# Source0-md5:	fd4071d6f2fdd0c302f579b3180115c1
 URL:		http://gstreamer.net/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
@@ -16,14 +20,15 @@ BuildRequires:	glib2-devel >= 1:2.34.0
 BuildRequires:	gobject-introspection-devel >= 0.9.6
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
-BuildRequires:	gstreamer-validate-devel >= 1.0.0
+BuildRequires:	gstreamer-validate-devel >= 1.6.0
 BuildRequires:	gtk-doc >= 1.3
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	libxml2-devel >= 2.0
-BuildRequires:	pkgconfig
-BuildRequires:	python >= 2.3
+BuildRequires:	pkgconfig >= 1:0.9.0
+BuildRequires:	python >= 1:2.3
 # what version???
 #BuildRequires:	python-pygobject3-devel >= 4.22
+BuildRequires:	rpmbuild(macros) >= 1.673
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 Requires:	glib2 >= 1:2.34.0
@@ -78,6 +83,20 @@ API documentation for GStreamer Editing Services library.
 %description apidocs -l pl.UTF-8
 Dokumentacja API biblioteki GStreamer Editing Services.
 
+%package -n bash-completion-gstreamer-editing-services
+Summary:	Bash completion for GStreamer Editing Services utilities
+Summary(pl.UTF-8):	Bashowe uzupełnianie paramterów narzędzi GStreamer Editing Services
+Group:		Applications/Shells
+Requires:	%{name} = %{version}-%{release}
+Requires:	bash-completion >= 2.0
+
+%description -n bash-completion-gstreamer-editing-services
+Bash completion for GStreamer Editing Services utilities (ges-launch).
+
+%description -n bash-completion-gstreamer-editing-services -l pl.UTF-8
+Bashowe uzupełnianie paramterów narzędzi GStreamer Editing Services
+(ges-launch).
+
 %prep
 %setup -q
 
@@ -90,7 +109,8 @@ Dokumentacja API biblioteki GStreamer Editing Services.
 %configure \
 	--disable-silent-rules \
 	--enable-gtk-doc \
-	--enable-static \
+	%{?with_static_libs:--enable-static} \
+	--with-bash-completion-dir=%{bash_compdir} \
 	--with-html-dir=%{_gtkdocdir}
 
 %{__make}
@@ -99,10 +119,16 @@ Dokumentacja API biblioteki GStreamer Editing Services.
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	scenariosdir=%{_datadir}/gstreamer-1.0/validate/scenarios
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libges-1.0.la
+# module loaded through glib
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgstnle.la
+
+%py_comp $RPM_BUILD_ROOT%{_libdir}/gst-validate-launcher/python/launcher/apps
+%py_ocomp $RPM_BUILD_ROOT%{_libdir}/gst-validate-launcher/python/launcher/apps
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -117,7 +143,9 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libges-1.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libges-1.0.so.0
 %{_libdir}/girepository-1.0/GES-1.0.typelib
-%{_datadir}/gstreamer-1.0/validate-scenario/ges-edit-clip-while-paused.scenario
+%attr(755,root,root) %{_libdir}/gstreamer-1.0/libgstnle.so
+%{_libdir}/gst-validate-launcher/python/launcher/apps/geslaunch.py*
+%{_datadir}/gstreamer-1.0/validate/scenarios/ges-edit-clip-while-paused.scenario
 
 %files devel
 %defattr(644,root,root,755)
@@ -126,10 +154,16 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/gir-1.0/GES-1.0.gir
 %{_pkgconfigdir}/gst-editing-services-1.0.pc
 
+%if %{with static_libs}
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libges-1.0.a
+%endif
 
 %files apidocs
 %defattr(644,root,root,755)
 %{_gtkdocdir}/ges-1.0
+
+%files -n bash-completion-gstreamer-editing-services
+%defattr(644,root,root,755)
+%{bash_compdir}/ges-launch-1.0
