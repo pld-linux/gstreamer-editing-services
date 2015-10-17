@@ -34,6 +34,7 @@ BuildRequires:	xz
 Requires:	glib2 >= 1:2.34.0
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Obsoletes:	gstreamer-gnonlin < 1.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -76,6 +77,7 @@ Summary:	API documentation for GStreamer Editing Services library
 Summary(pl.UTF-8):	Dokumentacja API biblioteki GStreamer Editing Services
 Group:		Documentation
 Requires:	gtk-doc-common
+Obsoletes:	gstreamer-gnonlin-apidocs < 1.6.0
 
 %description apidocs
 API documentation for GStreamer Editing Services library.
