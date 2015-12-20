@@ -2,17 +2,17 @@
 # Conditional build:
 %bcond_without	static_libs	# static library
 #
-%define		gst_req_ver	1.6.1
-%define		gstpb_req_ver	1.6.1
+%define		gst_req_ver	1.6.2
+%define		gstpb_req_ver	1.6.2
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.6.1
+Version:	1.6.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
-# Source0-md5:	2e2041ef576d702014f7f6064ac75d31
+# Source0-md5:	76a1aa3f08af4c56b08d784aea46b712
 URL:		http://gstreamer.net/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
