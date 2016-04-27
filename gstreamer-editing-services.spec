@@ -2,14 +2,14 @@
 # Conditional build:
 %bcond_without	python		# Python binding
 %bcond_without	static_libs	# static library
-#
+
 %define		gst_req_ver	1.8.0
 %define		gstpb_req_ver	1.8.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
 Version:	1.8.1
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
@@ -80,6 +80,9 @@ Summary(pl.UTF-8):	Dokumentacja API biblioteki GStreamer Editing Services
 Group:		Documentation
 Requires:	gtk-doc-common
 Obsoletes:	gstreamer-gnonlin-apidocs < 1.6.0
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description apidocs
 API documentation for GStreamer Editing Services library.
