@@ -8,12 +8,12 @@
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.12.0
+Version:	1.12.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
-# Source0-md5:	a2779627d12cda2f37279bf83bca3f36
+# Source0-md5:	8f4cf618c9f539a775e741aed69e9f13
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
