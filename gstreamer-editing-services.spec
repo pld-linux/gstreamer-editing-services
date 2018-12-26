@@ -3,17 +3,17 @@
 %bcond_without	python		# Python binding
 %bcond_without	static_libs	# static library
 
-%define		gst_req_ver	1.12.0
-%define		gstpb_req_ver	1.12.0
+%define		gst_req_ver	1.14.0
+%define		gstpb_req_ver	1.14.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.12.4
-Release:	2
+Version:	1.14.4
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
-# Source0-md5:	71e3f73b13c76d213d0c5cf859fa6f71
+# Source0-md5:	58d4f59da2b7879214c58a16d1ca68bb
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
@@ -185,6 +185,7 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libges-1.0.a
+%{_libdir}/gstreamer-1.0/libgstnle.a
 %endif
 
 %files apidocs
