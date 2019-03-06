@@ -10,7 +10,7 @@ Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
 Version:	1.14.4
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
@@ -149,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libges-1.0.la
 # module loaded through glib
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgstnle.la
+%if %{with static_libs}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgstnle.a
+%endif
 
 %if %{with python}
 %py_comp $RPM_BUILD_ROOT%{_libdir}/gst-validate-launcher/python/launcher/apps
@@ -187,7 +190,6 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libges-1.0.a
-%{_libdir}/gstreamer-1.0/libgstnle.a
 %endif
 
 %files apidocs
