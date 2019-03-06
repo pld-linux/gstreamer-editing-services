@@ -3,8 +3,9 @@
 %bcond_without	python		# Python binding
 %bcond_without	static_libs	# static library
 
-%define		gst_req_ver	1.14.0
-%define		gstpb_req_ver	1.14.0
+%define		gst_req_ver	1.14.4
+%define		gstpb_req_ver	1.14.4
+%define		gstvalidate_req_ver	1.12.1
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
@@ -22,7 +23,7 @@ BuildRequires:	glib2-devel >= 1:2.40.0
 BuildRequires:	gobject-introspection-devel >= 0.9.6
 BuildRequires:	gstreamer-devel >= %{gst_req_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
-BuildRequires:	gstreamer-validate-devel >= 1.6.0
+BuildRequires:	gstreamer-validate-devel >= %{gstvalidate_req_ver}
 BuildRequires:	gtk-doc >= 1.3
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	libxml2-devel >= 2.0
@@ -37,6 +38,7 @@ BuildRequires:	xz
 Requires:	glib2 >= 1:2.40.0
 Requires:	gstreamer >= %{gst_req_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
+Requires:	gstreamer-validate >= %{gstvalidate_req_ver}
 Obsoletes:	gstreamer-gnonlin < 1.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
