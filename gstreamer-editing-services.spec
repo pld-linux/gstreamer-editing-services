@@ -3,27 +3,27 @@
 %bcond_without	python		# Python binding
 %bcond_without	static_libs	# static library
 
-%define		gst_req_ver	1.14.4
-%define		gstpb_req_ver	1.14.4
-%define		gstvalidate_req_ver	1.12.1
+%define		gst_ver		1.16.0
+%define		gstpb_ver	1.16.0
+%define		gstvalidate_ver	1.12.1
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.14.4
-Release:	2
+Version:	1.16.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
-# Source0-md5:	58d4f59da2b7879214c58a16d1ca68bb
+# Source0-md5:	c419e6a108e8afd95a9ae7dfcf2d463c
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
 BuildRequires:	flex >= 2.5.31
 BuildRequires:	glib2-devel >= 1:2.40.0
 BuildRequires:	gobject-introspection-devel >= 0.9.6
-BuildRequires:	gstreamer-devel >= %{gst_req_ver}
-BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
-BuildRequires:	gstreamer-validate-devel >= %{gstvalidate_req_ver}
+BuildRequires:	gstreamer-devel >= %{gst_ver}
+BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
+BuildRequires:	gstreamer-validate-devel >= %{gstvalidate_ver}
 BuildRequires:	gtk-doc >= 1.3
 BuildRequires:	libtool >= 2:2.2.6
 BuildRequires:	libxml2-devel >= 2.0
@@ -36,9 +36,9 @@ BuildRequires:	rpmbuild(macros) >= 1.673
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 Requires:	glib2 >= 1:2.40.0
-Requires:	gstreamer >= %{gst_req_ver}
-Requires:	gstreamer-plugins-base >= %{gstpb_req_ver}
-Requires:	gstreamer-validate >= %{gstvalidate_req_ver}
+Requires:	gstreamer >= %{gst_ver}
+Requires:	gstreamer-plugins-base >= %{gstpb_ver}
+Requires:	gstreamer-validate >= %{gstvalidate_ver}
 Obsoletes:	gstreamer-gnonlin < 1.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -56,8 +56,8 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GStreamer Editing Services
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	glib2-devel >= 1:2.40.0
-Requires:	gstreamer-devel >= %{gst_req_ver}
-Requires:	gstreamer-plugins-base-devel >= %{gstpb_req_ver}
+Requires:	gstreamer-devel >= %{gst_ver}
+Requires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 
 %description devel
 Header files for GStreamer Editing Services library.
@@ -147,10 +147,10 @@ rm -rf $RPM_BUILD_ROOT
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libges-1.0.la
-# module loaded through glib
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgstnle.la
+# modules loaded through glib
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgst*.la
 %if %{with static_libs}
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgstnle.a
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgst*.a
 %endif
 
 %if %{with python}
@@ -172,6 +172,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libges-1.0.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libges-1.0.so.0
 %{_libdir}/girepository-1.0/GES-1.0.typelib
+%attr(755,root,root) %{_libdir}/gstreamer-1.0/libgstges.so
 %attr(755,root,root) %{_libdir}/gstreamer-1.0/libgstnle.so
 %if %{with python}
 %{_libdir}/gst-validate-launcher/python/launcher/apps/geslaunch.py*
