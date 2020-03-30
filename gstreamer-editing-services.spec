@@ -3,18 +3,18 @@
 %bcond_without	python		# Python binding
 %bcond_without	static_libs	# static library
 
-%define		gst_ver		1.16.0
-%define		gstpb_ver	1.16.0
+%define		gst_ver		1.16.2
+%define		gstpb_ver	1.16.2
 %define		gstvalidate_ver	1.12.1
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.16.0
+Version:	1.16.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
-# Source0-md5:	c419e6a108e8afd95a9ae7dfcf2d463c
+# Source0-md5:	e21029d53cf5d645b994e0ed79322795
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	autoconf >= 2.62
 BuildRequires:	automake >= 1:1.11
@@ -83,7 +83,7 @@ Summary(pl.UTF-8):	Dokumentacja API biblioteki GStreamer Editing Services
 Group:		Documentation
 Requires:	gtk-doc-common
 Obsoletes:	gstreamer-gnonlin-apidocs < 1.6.0
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
