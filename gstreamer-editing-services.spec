@@ -83,9 +83,7 @@ Summary(pl.UTF-8):	Dokumentacja API biblioteki GStreamer Editing Services
 Group:		Documentation
 Requires:	gtk-doc-common
 Obsoletes:	gstreamer-gnonlin-apidocs < 1.6.0
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description apidocs
 API documentation for GStreamer Editing Services library.
