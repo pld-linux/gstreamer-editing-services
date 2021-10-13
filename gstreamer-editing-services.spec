@@ -1,53 +1,43 @@
 #
 # Conditional build:
-%bcond_without	python		# Python binding (any)
-%bcond_without	python2		# CPython 2.x binding + validate launcher
+%bcond_without	apidocs		# API documentation
 %bcond_without	python3		# CPython 3.x binding
 %bcond_without	static_libs	# static library
 
-%if %{without python}
-%undefine	with_python2
-%undefine	with_python3
-%endif
-
-%define		gst_ver		1.16.3
-%define		gstpb_ver	1.16.3
-%define		gstvalidate_ver	1.12.1
+%define		gst_ver		1.18.5
+%define		gstpb_ver	1.18.5
+%define		gstvalidate_ver	1.18.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.16.3
+Version:	1.18.5
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
-Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/%{name}-%{version}.tar.xz
-# Source0-md5:	15e007faa8ac6c9049567f5b086d378b
+Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/gst-editing-services-%{version}.tar.xz
+# Source0-md5:	a9a6af515cc46f3847a43538105c9931
 URL:		https://gstreamer.freedesktop.org/
-BuildRequires:	autoconf >= 2.62
-BuildRequires:	automake >= 1:1.11
+BuildRequires:	bash-completion-devel >= 2.0
 BuildRequires:	flex >= 2.5.31
-BuildRequires:	glib2-devel >= 1:2.40.0
+BuildRequires:	glib2-devel >= 1:2.44.0
 BuildRequires:	gobject-introspection-devel >= 0.9.6
 BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-validate-devel >= %{gstvalidate_ver}
-BuildRequires:	gtk-doc >= 1.3
-BuildRequires:	libtool >= 2:2.2.6
+%{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
+BuildRequires:	meson >= 0.49
+BuildRequires:	ninja >= 1.5
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	pkgconfig >= 1:0.9.0
-%if %{with python2}
-BuildRequires:	python >= 1:2.3
-BuildRequires:	python-pygobject3-devel >= 3.0
-%endif
 %if %{with python3}
 BuildRequires:	python3 >= 1:3.4
 %endif
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.673
+BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
-Requires:	glib2 >= 1:2.40.0
+Requires:	glib2 >= 1:2.44.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	gstreamer-validate >= %{gstvalidate_ver}
@@ -67,7 +57,7 @@ Summary:	Header files for GStreamer Editing Services library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GStreamer Editing Services
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.40.0
+Requires:	glib2-devel >= 1:2.44.0
 Requires:	gstreamer-devel >= %{gst_ver}
 Requires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 
@@ -93,7 +83,6 @@ Statyczba biblioteka GStreamer Editing Services.
 Summary:	API documentation for GStreamer Editing Services library
 Summary(pl.UTF-8):	Dokumentacja API biblioteki GStreamer Editing Services
 Group:		Documentation
-Requires:	gtk-doc-common
 Obsoletes:	gstreamer-gnonlin-apidocs < 1.6.0
 BuildArch:	noarch
 
@@ -103,25 +92,13 @@ API documentation for GStreamer Editing Services library.
 %description apidocs -l pl.UTF-8
 Dokumentacja API biblioteki GStreamer Editing Services.
 
-%package -n python-gstreamer-editing-services
-Summary:	Python GI binding for GStreamer Editing Services
-Summary(pl.UTF-8):	Wiązanie Pythona GI do usług GStreamer Editing Services
-Group:		Libraries/Python
-Requires:	%{name} = %{version}-%{release}
-Requires:	python-pygobject3 >= 3.0
-
-%description -n python-gstreamer-editing-services
-Python GI binding for GStreamer Editing Services.
-
-%description -n python-gstreamer-editing-services -l pl.UTF-8
-Wiązanie Pythona GI do usług GStreamer Editing Services.
-
 %package -n python3-gstreamer-editing-services
 Summary:	Python GI binding for GStreamer Editing Services
 Summary(pl.UTF-8):	Wiązanie Pythona GI do usług GStreamer Editing Services
 Group:		Libraries/Python
 Requires:	%{name} = %{version}-%{release}
 Requires:	python3-pygobject3 >= 3.0
+Obsoletes:	python-gstreamer-editing-services < 1.18
 
 %description -n python3-gstreamer-editing-services
 Python GI binding for GStreamer Editing Services.
@@ -145,50 +122,39 @@ Bashowe uzupełnianie paramterów narzędzi GStreamer Editing Services
 (ges-launch).
 
 %prep
-%setup -q
+%setup -q -n gst-editing-services-%{version}
 
 %build
-%{__libtoolize}
-%{__aclocal} -I m4 -I common/m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
-	--disable-silent-rules \
-	--enable-gtk-doc \
-	%{?with_static_libs:--enable-static} \
-	--with-bash-completion-dir=%{bash_compdir} \
-	--with-html-dir=%{_gtkdocdir}
+%meson build \
+	%{!?with_apidocs:-Ddoc=false}
 
-%{__make}
+%ninja_build -C build
+
+%if %{with apidocs}
+cd build/docs
+for component in ges gst-editing-services nle ; do
+	LC_ALL=C.UTF-8 hotdoc run --conf-file ${component}-doc.json
+done
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	scenariosdir=%{_datadir}/gstreamer-1.0/validate/scenarios
+%ninja_install -C build
 
-# obsoleted by pkg-config
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libges-1.0.la
-# modules loaded through glib
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgst*.la
 %if %{with static_libs}
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgst*.a
-%endif
-
-%if %{with python2}
-%py_comp $RPM_BUILD_ROOT%{_libdir}/gst-validate-launcher/python/launcher/apps
-%py_ocomp $RPM_BUILD_ROOT%{_libdir}/gst-validate-launcher/python/launcher/apps
-
-%py_postclean
+%{__rm} -r $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/pkgconfig
 %endif
 
 %if %{with python3}
-install -d $RPM_BUILD_ROOT%{py3_sitedir}/gstreamer-editing-services
-cp -p bindings/python/gi/overrides/GES.py $RPM_BUILD_ROOT%{py3_sitedir}/gstreamer-editing-services
-%py3_comp $RPM_BUILD_ROOT%{py_sitedir}/gstreamer-editing-services
-%py3_ocomp $RPM_BUILD_ROOT%{py_sitedir}/gstreamer-editing-services
+%py3_comp $RPM_BUILD_ROOT%{py3_sitedir}
+%py3_ocomp $RPM_BUILD_ROOT%{py3_sitedir}
+%endif
+
+%if %{with apidocs}
+install -d $RPM_BUILD_ROOT%{_docdir}/gstreamer-%{gstmver}
+cp -pr build/docs/{ges,gst-editing-services,nle}-doc $RPM_BUILD_ROOT%{_docdir}/gstreamer-%{gstmver}
 %endif
 
 %clean
@@ -206,7 +172,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/girepository-1.0/GES-1.0.typelib
 %attr(755,root,root) %{_libdir}/gstreamer-1.0/libgstges.so
 %attr(755,root,root) %{_libdir}/gstreamer-1.0/libgstnle.so
-%if %{with python2}
+%if %{with python3}
 %{_libdir}/gst-validate-launcher/python/launcher/apps/geslaunch.py*
 %endif
 %{_datadir}/gstreamer-1.0/validate/scenarios/ges-edit-clip-while-paused.scenario
@@ -225,22 +191,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libges-1.0.a
 %endif
 
+%if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
-%{_gtkdocdir}/ges-1.0
-
-%if %{with python2}
-%files -n python-gstreamer-editing-services
-%defattr(644,root,root,755)
-# must be in %{py_sitedir} because of "..overrides" and "..importer" imports
-%{py_sitedir}/gstreamer-editing-services
+%{_docdir}/gstreamer-%{gstmver}/ges-doc
+%{_docdir}/gstreamer-%{gstmver}/gst-editing-services-doc
+%{_docdir}/gstreamer-%{gstmver}/nle-doc
 %endif
 
 %if %{with python3}
 %files -n python3-gstreamer-editing-services
 %defattr(644,root,root,755)
 # must be in %{py3_sitedir} because of "..overrides" and "..importer" imports
-%{py3_sitedir}/gstreamer-editing-services
+%{py3_sitedir}/gi/overrides/GES.py
+%{py3_sitedir}/gi/overrides/__pycache__/GES.cpython-*.py[co]
 %endif
 
 %files -n bash-completion-gstreamer-editing-services
