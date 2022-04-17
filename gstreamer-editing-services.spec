@@ -4,44 +4,47 @@
 %bcond_without	python3		# CPython 3.x binding
 %bcond_without	static_libs	# static library
 
-%define		gst_ver		1.19.3
-%define		gstpb_ver	1.19.3
-%define		gstvalidate_ver	1.16.0
+%define		gstmver		1.0
+%define		gst_ver		1.20.0
+%define		gstpb_ver	1.20.0
+%define		gstdevtools_ver	1.20.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.20.0
-Release:	3
+Version:	1.20.1
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/gst-editing-services-%{version}.tar.xz
-# Source0-md5:	513fa695a878f24ad30775f090c6dfb9
+# Source0-md5:	6995ba89240bc843dee1f6f79c4c5fba
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	bash-completion-devel >= 2.0
 BuildRequires:	flex >= 2.5.31
-BuildRequires:	glib2-devel >= 1:2.44.0
+BuildRequires:	glib2-devel >= 1:2.56.0
 BuildRequires:	gobject-introspection-devel >= 0.9.6
 BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-bad-devel >= %{gstpb_ver}
-BuildRequires:	gstreamer-validate-devel >= %{gstvalidate_ver}
+BuildRequires:	gstreamer-validate-devel >= %{gstdevtools_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
-BuildRequires:	meson >= 0.49
+BuildRequires:	meson >= 0.59
 BuildRequires:	ninja >= 1.5
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	pkgconfig >= 1:0.9.0
 %if %{with python3}
 BuildRequires:	python3 >= 1:3.4
+# for proper overrides dir detection
+BuildRequires:	python3-pygobject3
 %endif
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
-Requires:	glib2 >= 1:2.44.0
+Requires:	glib2 >= 1:2.56.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
-Requires:	gstreamer-validate >= %{gstvalidate_ver}
+Requires:	gstreamer-validate >= %{gstdevtools_ver}
 Obsoletes:	gstreamer-gnonlin < 1.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -58,7 +61,7 @@ Summary:	Header files for GStreamer Editing Services library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GStreamer Editing Services
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.44.0
+Requires:	glib2-devel >= 1:2.56.0
 Requires:	gstreamer-devel >= %{gst_ver}
 Requires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 
@@ -203,7 +206,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python3}
 %files -n python3-gstreamer-editing-services
 %defattr(644,root,root,755)
-# must be in %{py3_sitedir} because of "..overrides" and "..importer" imports
+# must be consistent with python-pygobject3.spec because of "..overrides" and "..importer" imports
 %{py3_sitedir}/gi/overrides/GES.py
 %{py3_sitedir}/gi/overrides/__pycache__/GES.cpython-*.py[co]
 %endif
