@@ -5,29 +5,29 @@
 %bcond_without	static_libs	# static library
 
 %define		gstmver		1.0
-%define		gst_ver		1.20.0
-%define		gstpb_ver	1.20.0
-%define		gstdevtools_ver	1.20.0
+%define		gst_ver		1.22.0
+%define		gstpb_ver	1.22.0
+%define		gstdevtools_ver	1.22.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.20.5
+Version:	1.22.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/gst-editing-services-%{version}.tar.xz
-# Source0-md5:	123ab2027c25ff7e8c72d14669bd01bb
+# Source0-md5:	de394a8b497b92bcd7e1be333268ffd2
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	bash-completion-devel >= 2.0
 BuildRequires:	flex >= 2.5.31
-BuildRequires:	glib2-devel >= 1:2.56.0
+BuildRequires:	glib2-devel >= 1:2.62.0
 BuildRequires:	gobject-introspection-devel >= 0.9.6
 BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-plugins-bad-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-validate-devel >= %{gstdevtools_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
-BuildRequires:	meson >= 0.59
+BuildRequires:	meson >= 0.62
 BuildRequires:	ninja >= 1.5
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -41,12 +41,15 @@ BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
-Requires:	glib2 >= 1:2.56.0
+Requires:	glib2 >= 1:2.62.0
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	gstreamer-validate >= %{gstdevtools_ver}
 Obsoletes:	gstreamer-gnonlin < 1.6.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+# must be consistent with python-pygobject3.spec because of "..overrides" and "..importer" imports
+%define		py3_gi_overridesdir	%{py3_sitedir}/gi/overrides
 
 %description
 GStreamer Editing Services is a high-level library for facilitating
@@ -61,7 +64,7 @@ Summary:	Header files for GStreamer Editing Services library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GStreamer Editing Services
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.56.0
+Requires:	glib2-devel >= 1:2.62.0
 Requires:	gstreamer-devel >= %{gst_ver}
 Requires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 
@@ -130,7 +133,8 @@ Bashowe uzupełnianie paramterów narzędzi GStreamer Editing Services
 
 %build
 %meson build \
-	%{!?with_apidocs:-Ddoc=false}
+	%{!?with_apidocs:-Ddoc=false} \
+	-Dpygi-overrides-dir=%{py3_sitedir}/gi/overrides
 
 %ninja_build -C build
 
@@ -206,9 +210,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python3}
 %files -n python3-gstreamer-editing-services
 %defattr(644,root,root,755)
-# must be consistent with python-pygobject3.spec because of "..overrides" and "..importer" imports
-%{py3_sitedir}/gi/overrides/GES.py
-%{py3_sitedir}/gi/overrides/__pycache__/GES.cpython-*.py[co]
+%{py3_gi_overridesdir}/GES.py
+%{py3_gi_overridesdir}/__pycache__/GES.cpython-*.py[co]
 %endif
 
 %files -n bash-completion-gstreamer-editing-services
