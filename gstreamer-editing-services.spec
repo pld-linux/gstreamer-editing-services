@@ -5,29 +5,30 @@
 %bcond_without	static_libs	# static library
 
 %define		gstmver		1.0
-%define		gst_ver		1.22.0
-%define		gstpb_ver	1.22.0
-%define		gstdevtools_ver	1.22.0
+%define		gst_ver		1.24.0
+%define		gstpb_ver	1.24.0
+%define		gstdevtools_ver	1.24.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.22.6
+Version:	1.24.0
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/gst-editing-services-%{version}.tar.xz
-# Source0-md5:	b014530bab0bf609e15b78a77a02af87
+# Source0-md5:	b5969d5f9b7c46f6b94bfa1d25c41ebf
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	bash-completion-devel >= 1:2.0
 BuildRequires:	flex >= 2.5.31
-BuildRequires:	glib2-devel >= 1:2.62.0
+BuildRequires:	glib2-devel >= 1:2.67.4
 BuildRequires:	gobject-introspection-devel >= 0.9.6
 BuildRequires:	gstreamer-devel >= %{gst_ver}
 BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
-BuildRequires:	gstreamer-plugins-bad-devel >= %{gstpb_ver}
+# for tests/check only
+#BuildRequires:	gstreamer-plugins-bad-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-validate-devel >= %{gstdevtools_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
-BuildRequires:	meson >= 0.62
+BuildRequires:	meson >= 1.1
 BuildRequires:	ninja >= 1.5
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -41,7 +42,7 @@ BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
-Requires:	glib2 >= 1:2.62.0
+Requires:	glib2 >= 1:2.67.4
 Requires:	gstreamer >= %{gst_ver}
 Requires:	gstreamer-plugins-base >= %{gstpb_ver}
 Requires:	gstreamer-validate >= %{gstdevtools_ver}
@@ -64,7 +65,7 @@ Summary:	Header files for GStreamer Editing Services library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki GStreamer Editing Services
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	glib2-devel >= 1:2.62.0
+Requires:	glib2-devel >= 1:2.67.4
 Requires:	gstreamer-devel >= %{gst_ver}
 Requires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 
@@ -140,8 +141,8 @@ Bashowe uzupełnianie paramterów narzędzi GStreamer Editing Services
 
 %if %{with apidocs}
 cd build/docs
-for component in ges gst-editing-services nle ; do
-	LC_ALL=C.UTF-8 hotdoc run --conf-file ${component}-doc.json
+for component_dir in gst-editing-services-doc plugin-ges plugin-nle ; do
+	LC_ALL=C.UTF-8 hotdoc run --conf-file ${component_dir}.json
 done
 %endif
 
@@ -162,7 +163,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %if %{with apidocs}
 install -d $RPM_BUILD_ROOT%{_docdir}/gstreamer-%{gstmver}
-cp -pr build/docs/{ges,gst-editing-services,nle}-doc $RPM_BUILD_ROOT%{_docdir}/gstreamer-%{gstmver}
+cp -pr build/docs/{gst-editing-services-doc,plugin-ges,plugin-nle} $RPM_BUILD_ROOT%{_docdir}/gstreamer-%{gstmver}
 %endif
 
 %clean
@@ -202,9 +203,9 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
-%{_docdir}/gstreamer-%{gstmver}/ges-doc
 %{_docdir}/gstreamer-%{gstmver}/gst-editing-services-doc
-%{_docdir}/gstreamer-%{gstmver}/nle-doc
+%{_docdir}/gstreamer-%{gstmver}/plugin-ges
+%{_docdir}/gstreamer-%{gstmver}/plugin-nle
 %endif
 
 %if %{with python3}
