@@ -132,7 +132,7 @@ Bashowe uzupełnianie paramterów narzędzi GStreamer Editing Services
 
 %prep
 %setup -q -n gst-editing-services-%{version}
-%patch0 -p3
+%patch -P0 -p3
 
 %build
 %meson build \
