@@ -11,13 +11,12 @@
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.24.8
+Version:	1.24.12
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/gst-editing-services-%{version}.tar.xz
-# Source0-md5:	0de240902e517738b063e2898123bdbd
-Patch0:		gst-editing-services-gi.patch
+# Source0-md5:	b1e43f4512820de37c25777bced4aa59
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	bash-completion-devel >= 1:2.0
 BuildRequires:	flex >= 2.5.31
@@ -40,7 +39,7 @@ BuildRequires:	python3-pygobject3
 %endif
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpm-pythonprov
-BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	rpmbuild(macros) >= 2.042
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 Requires:	glib2 >= 1:2.67.4
@@ -132,14 +131,13 @@ Bashowe uzupełnianie paramterów narzędzi GStreamer Editing Services
 
 %prep
 %setup -q -n gst-editing-services-%{version}
-%patch -P0 -p3
 
 %build
-%meson build \
+%meson \
 	%{!?with_apidocs:-Ddoc=false} \
 	-Dpygi-overrides-dir=%{py3_sitedir}/gi/overrides
 
-%ninja_build -C build
+%meson_build -C build
 
 %if %{with apidocs}
 cd build/docs
@@ -151,7 +149,7 @@ done
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install -C build
 
 %if %{with static_libs}
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/gstreamer-1.0/libgst*.a
