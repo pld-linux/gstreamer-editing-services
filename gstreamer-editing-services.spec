@@ -12,7 +12,7 @@ Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
 Version:	1.24.12
-Release:	2
+Release:	3
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/gst-editing-services-%{version}.tar.xz
