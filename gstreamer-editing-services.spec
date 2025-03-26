@@ -5,18 +5,18 @@
 %bcond_without	static_libs	# static library
 
 %define		gstmver		1.0
-%define		gst_ver		1.24.0
-%define		gstpb_ver	1.24.0
-%define		gstdevtools_ver	1.24.0
+%define		gst_ver		1.26.0
+%define		gstpb_ver	1.26.0
+%define		gstdevtools_ver	1.26.0
 Summary:	GStreamer Editing Services library
 Summary(pl.UTF-8):	Biblioteka funkcji edycyjnych GStreamera (GStreamer Editing Services)
 Name:		gstreamer-editing-services
-Version:	1.24.12
-Release:	3
+Version:	1.26.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://gstreamer.freedesktop.org/src/gstreamer-editing-services/gst-editing-services-%{version}.tar.xz
-# Source0-md5:	b1e43f4512820de37c25777bced4aa59
+# Source0-md5:	befed8e694ab580f21bad5426fd8f70e
 URL:		https://gstreamer.freedesktop.org/
 BuildRequires:	bash-completion-devel >= 1:2.0
 BuildRequires:	flex >= 2.5.31
@@ -28,7 +28,7 @@ BuildRequires:	gstreamer-plugins-base-devel >= %{gstpb_ver}
 #BuildRequires:	gstreamer-plugins-bad-devel >= %{gstpb_ver}
 BuildRequires:	gstreamer-validate-devel >= %{gstdevtools_ver}
 %{?with_apidocs:BuildRequires:	hotdoc >= 0.11.0}
-BuildRequires:	meson >= 1.1
+BuildRequires:	meson >= 1.4
 BuildRequires:	ninja >= 1.5
 BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	pkgconfig >= 1:0.9.0
@@ -134,12 +134,22 @@ Bashowe uzupełnianie paramterów narzędzi GStreamer Editing Services
 
 %build
 %meson \
-	%{!?with_apidocs:-Ddoc=false} \
-	-Dpygi-overrides-dir=%{py3_sitedir}/gi/overrides
+	-Dbash-completion=enabled \
+	-Ddoc=%{__enabled_disabled apidocs} \
+	-Dexamples=disabled \
+	-Dintrospection=enabled \
+	-Dpygi-overrides-dir=%{py3_sitedir}/gi/overrides \
+	-Dpython=%{__enabled_disabled python3} \
+	-Dtests=disabled \
+	-Dtools=enabled \
+	-Dvalidate=enabled \
+	-Dxptv=enabled
 
 %meson_build -C build
 
 %if %{with apidocs}
+%meson_build build-gst-hotdoc-configs build-hotdoc-configs
+
 cd build/docs
 for component_dir in gst-editing-services-doc plugin-ges plugin-nle ; do
 	LC_ALL=C.UTF-8 hotdoc run --conf-file ${component_dir}.json
@@ -181,10 +191,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/girepository-1.0/GES-1.0.typelib
 %attr(755,root,root) %{_libdir}/gstreamer-1.0/libgstges.so
 %attr(755,root,root) %{_libdir}/gstreamer-1.0/libgstnle.so
-%if %{with python3}
-%{_libdir}/gst-validate-launcher/python/launcher/apps/geslaunch.py*
-%endif
-%{_datadir}/gstreamer-1.0/validate/scenarios/ges-edit-clip-while-paused.scenario
 %{_mandir}/man1/ges-launch-1.0.1*
 
 %files devel
