@@ -34,6 +34,7 @@ BuildRequires:	libxml2-devel >= 2.0
 BuildRequires:	pkgconfig >= 1:0.9.0
 %if %{with python3}
 BuildRequires:	python3 >= 1:3.4
+BuildRequires:	python3-devel >= 1:3.4
 # for proper overrides dir detection
 BuildRequires:	python3-pygobject3
 %endif
